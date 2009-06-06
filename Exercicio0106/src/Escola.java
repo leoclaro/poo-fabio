@@ -5,8 +5,10 @@ public class Escola {
 	/**
 	 * @param args
 	 */
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		
 		String nome, reprovar, matricula1, notaa, notab, notac, qtde_aulas_ministradas, qtde_aulas_assistidas, tipo_aluno;
 
 		int matricula;
