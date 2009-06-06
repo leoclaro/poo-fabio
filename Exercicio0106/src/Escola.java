@@ -5,41 +5,20 @@ public class Escola {
 	/**
 	 * @param args
 	 */
-	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		
-		String nome, reprovar, matricula1, notaa, notab, notac, qtde_aulas_ministradas, qtde_aulas_assistidas, tipo_aluno;
+		Aluno aluno = new Aluno();
+	
+		aluno.tipo_aluno = JOptionPane.showInputDialog("Tipo de Aluno(Normal, Repetente ou Alistado)");
+		aluno.nome = JOptionPane.showInputDialog("Nome Aluno");
+		aluno.matricula = Integer.parseInt(JOptionPane.showInputDialog("Informe a Matricula"));
+		aluno.nota1 = Integer.parseInt(JOptionPane.showInputDialog("Informe a primeira Nota"));
+		aluno.nota2 = Integer.parseInt(JOptionPane.showInputDialog("Informe a segunda Nota"));
+		aluno.nota3 = Integer.parseInt(JOptionPane.showInputDialog("Informe a terceira Nota"));
+		aluno.qtde_aulas_ministradas = Integer.parseInt(JOptionPane.showInputDialog("Quantidade de aulas ministradas"));
+		aluno.qtde_aulas_assistidas = Integer.parseInt(JOptionPane.showInputDialog("Quantidade de aulas assistidas"));
 
-		int matricula;
-		int nota1;
-		int nota2;
-		int nota3;
-		float media;
-		int qtde_aulas_ministradas1;
-		int qtde_aulas_assistidas1;
-
-		nome = JOptionPane.showInputDialog("Nome Aluno");
-		tipo_aluno = JOptionPane
-				.showInputDialog("Tipo de Aluno(Normal, Repetente ou Alistado)");
-		matricula1 = JOptionPane.showInputDialog("Informe a Matricula");
-		notaa = JOptionPane.showInputDialog("Informe a primeira Nota");
-		notab = JOptionPane.showInputDialog("Informe a segunda Nota");
-		notac = JOptionPane.showInputDialog("Informe a terceira Nota");
-		qtde_aulas_ministradas = JOptionPane
-				.showInputDialog("Quantidade de aulas ministradas");
-		qtde_aulas_assistidas = JOptionPane
-				.showInputDialog("Quantidade de aulas assistidas");
-
-		matricula = Integer.parseInt(matricula1);
-		nota1 = Integer.parseInt(notaa);
-		nota2 = Integer.parseInt(notab);
-		nota3 = Integer.parseInt(notac);
-		qtde_aulas_assistidas1 = Integer.parseInt(qtde_aulas_assistidas);
-		qtde_aulas_ministradas1 = Integer.parseInt(qtde_aulas_ministradas);
-
-	 
-
+		System.out.println("O aluno "+ aluno.nome +" "+ aluno.matricula +" "+ "foi: "+aluno.aprovar());
 	}
 
 }
