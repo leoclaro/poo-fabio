@@ -6,12 +6,15 @@ import robocode.*;
 
 public class IFBot extends Robot {
 
-	int turnDirection = 1; // Clockwise or counterclockwise
-	double moveAmount; // How much to move
-	boolean peek; // Don't turn if there's a robot there
-	
+	int turnDirection = 1; // Flag para mudança de sentido: horário e anti-horário
+	double moveAmount; // Quanto o robô deve se mover
+	boolean peek; // Não se mover caso exista um robô por perto
+
+	/**
+	 * Alterando as cores do robô para personalizar. Faz o movimento inicial para começar andar perto das paredes sem bater.
+	 */
 	public void run(){
-		
+
 		setBodyColor(Color.black);
 		setGunColor(Color.white);
 		setRadarColor(Color.blue);
@@ -20,68 +23,98 @@ public class IFBot extends Robot {
 		turnLeft(getHeading() % 90);
 		moveAmount = Math.max(getBattleFieldWidth(), getBattleFieldHeight());
 		while(true){
-			
+
 			ahead(moveAmount);
 			peek = true;
-			// Move up the wall
+			// Movendo para a parede
 			ahead(moveAmount);
-			// Don't look now
+			// Não faz scan agora
 			peek = false;
-			// Turn to the next wall
+			// Indo para outra parede
 			turnRight(90);
-		
-			
+
+
 		}
-		
+
 	}
 
-
+	/**
+	 * Evento usado ao se encontrar um robô no scan. Disparamos um tiro e mudamos de posição para se esquivar de alguma mira
+	 */
 	@Override
 	public void onScannedRobot(ScannedRobotEvent e) {
 
-		fire(1);
-		if (e.getBearing() >= 0) {
-			turnDirection = 1;
-		} else {
-			turnDirection = -1;
-		}
-		
+		mira(e.getBearing());
+		fogo(e.getDistance());
 
-		turnRight(e.getBearing());
-		ahead(e.getDistance() + 5);
-		scan(); // Might want to move ahead again!
+		//turnRight(e.getBearing());
+		//ahead(e.getDistance() + 5);
 	}
 
+	/**
+	 * Não faz nada ao ganhar
+	 */
 	@Override
 	public void onWin(WinEvent e) {
-		// TODO Auto-generated method stub
-		super.onWin(e);
+
 	}
-	
+
 	/**
-	 * onHitRobot:  Move away a bit.
+	 * Evento que ocorre quando o robô bater em outro. No nosso caso, 
+	 * ele efetua um disparo mais potente aproveitando que está mais perto. 
+	 * Se for o IFBot que bateu, então ele abre uma distância antes. 
 	 */
 	public void onHitRobot(HitRobotEvent e) {
-		// If he's in front of us, set back up a bit.
-		if (e.getBearing() > -10 && e.getBearing() < 10) {
-			fire(10);
-		}
-		if (e.isMyFault()) {
-			turnRight(10);
-		}
+		mira(e.getBearing());
+		fogo(2);
 	}
-	
+
 	public void onHitByBullet(HitByBulletEvent e) {
-		turnLeft(90 - e.getBearing());
+		back(10);
+		turnRight(10);
+		scan();
 	}
 
 
 	@Override
 	public void onBulletMissed(BulletMissedEvent e) {
-		back(20);
+		mira(e.getBullet().getHeading());
 		scan();
 	}
-	
-	
+
+	public void mira(double Adv)
+	{
+		double A=getHeading()+Adv-getGunHeading();
+		if (!(A > -180 && A <= 180))
+		{
+			while (A <= -180)
+				A += 360;
+			while (A > 180)
+				A -= 360;
+		}
+		turnGunRight(A);
+	}
+
+	public void fogo(double Distancia)
+	{
+		if (Distancia> 200 || getEnergy() < 15)
+			fire(1);
+		else if (Distancia > 50)
+			fire(2);
+		else
+			fire(3);
+	}
+
+	public double anguloRelativo(double ANG)
+	{
+		if (ANG> -180 && ANG<= 180)
+			return ANG;
+		double REL = ANG;
+		while (REL<= -180)
+			REL += 360;
+		while (ANG> 180)
+			REL -= 360;
+		return REL;
+	}
 
 }
