@@ -9,6 +9,7 @@ public class IFBot extends Robot {
 	int turnDirection = 1; // Flag para mudança de sentido: horário e anti-horário
 	double moveAmount; // Quanto o robô deve se mover
 	boolean peek; // Não se mover caso exista um robô por perto
+	double tirosLevados = 0;
 
 	/**
 	 * Alterando as cores do robô para personalizar. Faz o movimento inicial para começar andar perto das paredes sem bater.
@@ -46,6 +47,7 @@ public class IFBot extends Robot {
 
 		mira(e.getBearing());
 		fogo(e.getDistance());
+		ahead(e.getDistance() + 10);
 
 		//turnRight(e.getBearing());
 		//ahead(e.getDistance() + 5);
@@ -65,23 +67,55 @@ public class IFBot extends Robot {
 	 * Se for o IFBot que bateu, então ele abre uma distância antes. 
 	 */
 	public void onHitRobot(HitRobotEvent e) {
+		
+		if (e.getBearing() > -10 && e.getBearing() < 10) {
+			fire(3);
+		}
+		if (e.isMyFault()) {
+			turnRight(20);
+			back(30);
+		}
 		mira(e.getBearing());
-		fogo(2);
+		fogo(3);
 	}
 
+	/**
+	 * Evento que ocorre quando o robô é atingido por um tiro. Nesa hora ele tenta sair da posição e inicia o scan novamente
+	 * para procurar o inimigo mais próximo
+	 */
 	public void onHitByBullet(HitByBulletEvent e) {
-		back(10);
-		turnRight(10);
+		
+		this.tirosLevados+= 1 * e.getPower();
+		
+		if(this.tirosLevados > 3){
+			turnRight(150);
+			back(200);
+			
+		}else{
+			turnRight(100);
+			back(80);
+		}
 		scan();
 	}
 
 
+	/**
+	 * Evento que ocorre quando o IFBot erra o tiro. Então, mira novamente
+	 */
 	@Override
 	public void onBulletMissed(BulletMissedEvent e) {
-		mira(e.getBullet().getHeading());
+
+	//	back(15);
+	//	turnRight(5);
 		scan();
+		mira(e.getBullet().getHeading());
+		fogo(20);
 	}
 
+	/**
+	 * Função de mira usada na apostila
+	 * @param Adv
+	 */
 	public void mira(double Adv)
 	{
 		double A=getHeading()+Adv-getGunHeading();
@@ -95,26 +129,35 @@ public class IFBot extends Robot {
 		turnGunRight(A);
 	}
 
+	/**
+	 * Efetua calibração do tiro data uma certa distância
+	 * @param Distancia
+	 */
 	public void fogo(double Distancia)
 	{
 		if (Distancia> 200 || getEnergy() < 15)
-			fire(1);
-		else if (Distancia > 50)
 			fire(2);
 		else
 			fire(3);
 	}
 
-	public double anguloRelativo(double ANG)
-	{
-		if (ANG> -180 && ANG<= 180)
-			return ANG;
-		double REL = ANG;
-		while (REL<= -180)
-			REL += 360;
-		while (ANG> 180)
-			REL -= 360;
-		return REL;
+	/**
+	 * Quando acertar o tiro, recalibra a quantidade de tiros que já levou,
+	 * faz um disparo maior e retorna ao scan
+	 */
+	@Override
+	public void onBulletHit(BulletHitEvent e) {
+		this.tirosLevados = 1;
+		fogo(3);
+		scan();
+		
 	}
+
+	@Override
+	public void onBulletHitBullet(BulletHitBulletEvent arg0) {
+		// TODO Auto-generated method stub
+		super.onBulletHitBullet(arg0);
+	}
+
 
 }
