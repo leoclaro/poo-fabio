@@ -34,6 +34,7 @@ public class IFBot extends Robot {
 			// Indo para outra parede
 			turnRight(90);
 
+			scan();
 
 		}
 
@@ -47,7 +48,7 @@ public class IFBot extends Robot {
 
 		mira(e.getBearing());
 		fogo(e.getDistance());
-		ahead(e.getDistance() + 10);
+	//	ahead(e.getDistance() + 10);
 
 		//turnRight(e.getBearing());
 		//ahead(e.getDistance() + 5);
@@ -109,7 +110,7 @@ public class IFBot extends Robot {
 	//	turnRight(5);
 		scan();
 		mira(e.getBullet().getHeading());
-		fogo(20);
+	//	fogo(20);
 	}
 
 	/**
@@ -136,7 +137,7 @@ public class IFBot extends Robot {
 	public void fogo(double Distancia)
 	{
 		if (Distancia> 200 || getEnergy() < 15)
-			fire(2);
+			fire(1);
 		else
 			fire(3);
 	}
@@ -151,12 +152,6 @@ public class IFBot extends Robot {
 		fogo(3);
 		scan();
 		
-	}
-
-	@Override
-	public void onBulletHitBullet(BulletHitBulletEvent arg0) {
-		// TODO Auto-generated method stub
-		super.onBulletHitBullet(arg0);
 	}
 
 
